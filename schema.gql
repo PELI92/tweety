@@ -1,0 +1,15 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type UserModel {
+  _id: ID!
+  username: String!
+  displayName: String
+  bio: String
+}
+
+type Query {
+  hello: String!
+  findUserByUsername(username: String!): UserModel
+}

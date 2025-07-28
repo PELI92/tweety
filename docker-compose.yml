@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:6
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - backend
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - auth
+      - user
+      - tweet
+    networks:
+      - backend
+
+  auth:
+    image: tweety-auth:latest
+    build:
+      context: .
+      dockerfile: apps/auth/Dockerfile
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/tweety
+    networks:
+      - backend
+
+  user:
+    image: tweety-user:latest
+    build:
+      context: .
+      dockerfile: apps/user/Dockerfile
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/tweety
+    networks:
+      - backend
+
+  tweet:
+    image: tweety-tweet:latest
+    build:
+      context: .
+      dockerfile: apps/tweet/Dockerfile
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/tweety
+    networks:
+      - backend
+
+volumes:
+  mongo-data:
+
+networks:
+  backend:
